@@ -1,2 +1,5 @@
-# Sistemas-Tempo-Real
-Projeto Sistemas em Tempo Real.
+# RTOS
+
+Projetos RTOS
+
+Software: FreeRTOS
