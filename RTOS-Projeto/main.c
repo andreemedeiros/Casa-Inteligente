@@ -86,6 +86,9 @@ void vTask_4(void* pvParameters);
 void vTask_5(void* pvParameters);
 void vTask_6(void* pvParameters);
 
+/* Função que converte Ticks para Milisegundos de cada tarefa*/
+//#define vTask_1 pdMS_TO_TICKS(1000)
+
 /* Used to hold the handle of Task2. */
 TaskHandle_t xTask2Handle;
 
