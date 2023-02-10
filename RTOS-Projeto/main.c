@@ -58,11 +58,11 @@
 	
 	-----------------------------------------------------------------------------------
 	|		Tarefas do Sistema         |Prioridade|T.Execução|Deadline|Período|
-	|Tarefa 1: Irrigação do jardim		   |	2     |	    3    |   4    |  12h  |
-	|Tarefa 2: Iluminação da área externa	   |	4     |	    3    |   4    |  24h  | 
-	|Tarefa 3: Alimentação do pet automatizada |	5     |	    3    |   4    |  8h   |
-	|Tarefa 4: Portão do pet		   |	3     |     5    |   6    |  8h   |
-	|Tarefa 5: Ligar o ar-condicionado	   |	1     |	    3    |   4    |  24h  |
+	|Tarefa 1: Ligar o ar-condicionado	   |	1     |	    3    |   4    |  24h  |
+	|Tarefa 2: Irrigação do jardim		   |	2     |	    3    |   4    |  12h  |
+	|Tarefa 3: Portão do pet		   |	3     |     5    |   6    |  8h   |
+	|Tarefa 4: Iluminação da área externa	   |	4     |	    3    |   4    |  24h  |
+	|Tarefa 5: Alimentação do pet automatizada |	5     |	    3    |   4    |  8h   |
 	|Tarefa 6: Checagem de portas e janelas	   |	6     |     5    |   6    |  12h  |
 	-----------------------------------------------------------------------------------
 
