@@ -3,8 +3,8 @@
 Projeto RTOS (Real Time Operating System) aplicado à automação residencial.
 
 Softwares Utilizados: 
-- FreeRTOS
-- Visual Studio 2022
+- FreeRTOS;
+- Visual Studio 2022;
 - Windows SDK.
 
 Tarefas Periódicas:
@@ -15,4 +15,5 @@ Tarefas Periódicas:
   Tarefa 5: Ligar o ar-condicionado;
   Tarefa 6: Checagem de portas e janelas.
   
-Modelo de Escalonamento: RM (Rate-Monotonic)
+Modelo de Escalonamento: 
+- RM (Rate-Monotonic)
