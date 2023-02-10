@@ -53,21 +53,22 @@
 	1 tab == 4 spaces!
 */
 
-/*
-	Tarefas do Sistema:
+/*-------------------------------------------------------------------------------------------
+				Projeto RTOS utilizando FreeRTOS
+	
+	-----------------------------------------------------------------------------------
+	|		Tarefas do Sistema         |Prioridade|T.Execução|Deadline|Período|
+	|Tarefa 1: Irrigação do jardim		   |	2     |	    3    |   4    |  12h  |
+	|Tarefa 2: Iluminação da área externa	   |	4     |	    3    |   4    |  24h  | 
+	|Tarefa 3: Alimentação do pet automatizada |	5     |	    3    |   4    |  8h   |
+	|Tarefa 4: Portão do pet		   |	3     |     5    |   6    |  8h   |
+	|Tarefa 5: Ligar o ar-condicionado	   |	1     |	    3    |   4    |  24h  |
+	|Tarefa 6: Checagem de portas e janelas	   |	6     |     5    |   6    |  12h  |
+	-----------------------------------------------------------------------------------
 
-	Tarefa 1: Irrigação do jardim
-	Tarefa 2: Iluminação da área externa
-	Tarefa 3: Alimentação do pet automatizada
-	Tarefa 4: Portão do pet
-	Tarefa 5: Ligar o ar-condicionado
-	Tarefa 6: Checagem de portas e janelas
+-------------------------------------------------------------------------------------------*/
 
-*/
-
-
-#include "Stdio.h"
-/* FreeRTOS.org includes. */
+/* Bibliotecas FreeRTOS */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
@@ -88,7 +89,7 @@ void vTask_6(void* pvParameters);
 /* Used to hold the handle of Task2. */
 TaskHandle_t xTask2Handle;
 
-/*-----------------------------------------------------------*/
+/*------------------------------------------------------------------------------------------*/
 
 void HelloTask(){
 	while (1) {
@@ -97,6 +98,7 @@ void HelloTask(){
 }
 }
 
+/*------------------------------------------------------------------------------------------*/
 
 /* MAIN */ 
 int main(void)
@@ -109,14 +111,29 @@ int main(void)
 	
 	
 	
-	/* Tarefa de prioridade 1 (menor) */
-	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 1, &HT);
+	/* Tarefa de prioridade 7  */
+	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 7, &HT);
 	
-	/* Tarefa com prioridade 3 (maior) */
-	xTaskCreate(vTask_1, "Task 1", 1000, NULL, 3, NULL);
+	
+	
+	
+	/* Tarefa com prioridade 1 (menor) */
+	xTaskCreate(vTask_1, "Task 1", 1000, NULL, 1, NULL);
+	
+	/* Tarefa com prioridade 2  */
+	xTaskCreate(vTask_2, "Task 2", 1000, NULL, 2, NULL);
 
-	/* Tarefa de prioridade 2 */
-	xTaskCreate(vTask_2, "Task 2", 1000, NULL, 2, &xTask2Handle);
+	/* Tarefa de prioridade 3 (maior) */
+	xTaskCreate(vTask_3, "Task 3", 1000, NULL, 3, &xTask2Handle);
+	
+	/* Tarefa com prioridade 4  */
+	//xTaskCreate(vTask_4, "Task 4", 1000, NULL, 4, NULL);
+	
+	/* Tarefa com prioridade 5  */
+	//xTaskCreate(vTask_5, "Task 5", 1000, NULL, 5, NULL);
+	
+	/* Tarefa com prioridade 6  */
+	//xTaskCreate(vTask_6, "Task 6", 1000, NULL, 6, NULL);
 	
 	
 	
@@ -129,9 +146,22 @@ int main(void)
 	for (;; );
 	return 0;
 }
-/*-----------------------------------------------------------*/
-
-
-
+/*------------------------------------------------------------------------------------------*/
 
 /*Função para  ... */
+
+
+
+
+
+
+/*------------------------------------------------------------------------------------------*/
+
+/*Função para  ... */
+
+
+
+
+
+
+/*------------------------------------------------------------------------------------------*/
