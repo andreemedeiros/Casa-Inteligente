@@ -2,7 +2,10 @@
 
 Projeto RTOS (Real Time Operating System) aplicado à automação residencial.
 
-Softwares: FreeRTOS, Visual Studio 2022 e Windows SDK.
+Softwares Utilizados: 
+- FreeRTOS
+- Visual Studio 2022
+- Windows SDK.
 
 Tarefas Periódicas:
   Tarefa 1: Irrigação do jardim;
