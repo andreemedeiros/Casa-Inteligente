@@ -54,10 +54,6 @@
 */
 
 /*
-	Projeto disciplina Sistemas em Tempo Real
-	Aluno: André Escarião		Matrícula:119210793
-	Aluno: Eduardo Sátiro		Matrícula:118210825
-
 	Tarefas do Sistema:
 
 	Tarefa 1: Irrigação do jardim
