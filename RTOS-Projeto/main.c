@@ -105,7 +105,7 @@ void HelloTask(){
 /* MAIN */ 
 int main(void)
 {
-	/*  */
+	/* Ponteiro tarefa */
 	xTaskHandle HT;
 
 	/* Timer para gerenciamento do tempo*/
