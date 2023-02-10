@@ -2,7 +2,7 @@
 
 Projeto Real Time Operating System
 
-Software: FreeRTOS - Visual Studio 2022
+Softwares: FreeRTOS - Visual Studio 2022 - Windows SDK
 
 Tarefas:
   Tarefa 1: Irrigação do jardim
