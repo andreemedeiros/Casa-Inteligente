@@ -68,42 +68,38 @@
 
 -------------------------------------------------------------------------------------------*/
 
+
 /* Bibliotecas FreeRTOS */
 #include "FreeRTOS.h"
 #include "task.h"
-#include "timers.h"
+//#include "timers.h"
 #include "queue.h"
-//#include "config.h"
-#include <conio.h>
+//#include <conio.h>
 /* Demo includes. */
 #include "supporting_functions.h"
 
 /* Seis funções de tarefas. */
-void vTask_1(void* pvParameters);
-void vTask_2(void* pvParameters);
-void vTask_3(void* pvParameters);
-void vTask_4(void* pvParameters);
-void vTask_5(void* pvParameters);
-void vTask_6(void* pvParameters);
+void vTaskFunction(void* pvParameters);
+void HelloTask(void* pvParameters);
+
+/* String definidas pra cada tarefa */
+const char* pcTextForTask1 = "Tarefa 1: Ar condicionado ligado\r\n";
+const char* pcTextForTask2 = "Tarefa 2: Irrigacao do jardim Ligada\r\n";
+const char* pcTextForTask3 = "Tarefa 3: Portao do pet aberto\r\n";
 
 /* Função que converte Ticks para Milisegundos de cada tarefa*/
-//#define vTask_1 pdMS_TO_TICKS(1000);
+//#define vTask_1 pdMS_TO_TICKS(250);
 
 /* Used to hold the handle of Task2. */
 TaskHandle_t xTask2Handle;
 
-/*------------------------------------------------------------------------------------------*/
 
-void HelloTask(){
-	while (1) {
-		printf("Hello STR\n");
-		vTaskDelay(1000);
-	}
-}
 
 /*------------------------------------------------------------------------------------------*/
 
-/* MAIN */ 
+
+
+/* MAIN */
 int main(void)
 {
 	/* Ponteiro tarefa */
@@ -111,38 +107,31 @@ int main(void)
 
 	/* Timer para gerenciamento do tempo*/
 	//xTimer = xTimerCreate("Timer", Main_TIMER_PERIODO, pdFALSE, 0, NULL);
-	
-	
-	
+
+
 	/* Tarefa de prioridade 7  */
 	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 7, &HT);
-	
-	
-	
-	
-	/* Tarefa com prioridade 1 (menor) */
-	xTaskCreate(vTask_1, "Task 1", 1000, NULL, 1, NULL);
-	
-	/* Tarefa com prioridade 2  */
-	xTaskCreate(vTask_2, "Task 2", 1000, NULL, 2, NULL);
 
-	/* Tarefa de prioridade 3 (maior) */
-	xTaskCreate(vTask_3, "Task 3", 1000, NULL, 3, &xTask2Handle);
-	
-	/* Tarefa com prioridade 4  */
-	//xTaskCreate(vTask_4, "Task 4", 1000, NULL, 4, NULL);
-	
-	/* Tarefa com prioridade 5  */
-	//xTaskCreate(vTask_5, "Task 5", 1000, NULL, 5, NULL);
-	
-	/* Tarefa com prioridade 6  */
-	//xTaskCreate(vTask_6, "Task 6", 1000, NULL, 6, NULL);
-	
-	
-	
-	
+
+
+
+	/* Task1 */
+	xTaskCreate(vTaskFunction, "Task 1", 1000, (void*)pcTextForTask1, 1, NULL);
+
+	/* Task2 */
+	xTaskCreate(vTaskFunction, "Task 2", 1000, (void*)pcTextForTask2, 2, NULL);
+
+	/* Task3 */
+	xTaskCreate(vTaskFunction, "Task 3", 1000, (void*)pcTextForTask3, 3, NULL);
+
+
+
+
+
+
+
 	//xTimerStart(xTimer, 0);
-	
+
 	/* Agendador para iniciar tarefas a serem executadas. */
 	vTaskStartScheduler();
 	/*Loop Infinito */
@@ -151,11 +140,48 @@ int main(void)
 }
 /*------------------------------------------------------------------------------------------*/
 
+/*Função para mensagem de iniciar */
+void HelloTask(void* pvParameters) {
+	while (1) {
+		printf("Iniciando Sistema de Casa Inteligente...\n");
+		vTaskDelay(1000);
+	}
+}
+
+
+/*------------------------------------------------------------------------------------------*/
+
 /*Função para  ... */
+void vTaskFunction(void* pvParameters)
+{
+	char* pcTaskName;
+	TickType_t xLastWakeTime;
+	const TickType_t xDelay10000ms = pdMS_TO_TICKS(1000UL);
 
+	/* The string to print out is passed in via the parameter.  Cast this to a
+	character pointer. */
+	pcTaskName = (char*)pvParameters;
 
+	/* The xLastWakeTime variable needs to be initialized with the current tick
+	count.  Note that this is the only time we access this variable.  From this
+	point on xLastWakeTime is managed automatically by the vTaskDelayUntil()
+	API function. */
+	xLastWakeTime = xTaskGetTickCount();
 
+	/* As per most tasks, this task is implemented in an infinite loop. */
+	for (;; )
+	{
+		/* Print out the name of this task. */
+		vPrintString(pcTaskName);
 
+		/* We want this task to execute exactly every 250 milliseconds.  As per
+		the vTaskDelay() function, time is measured in ticks, and the
+		pdMS_TO_TICKS() macro is used to convert this to milliseconds.
+		xLastWakeTime is automatically updated within vTaskDelayUntil() so does not
+		have to be updated by this task code. */
+		vTaskDelayUntil(&xLastWakeTime, xDelay10000ms);
+	}
+}
 
 
 /*------------------------------------------------------------------------------------------*/
@@ -165,6 +191,4 @@ int main(void)
 
 
 
-
-
-/*------------------------------------------------------------------------------------------*/
+/*---------------------
