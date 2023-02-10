@@ -108,6 +108,11 @@ int main(void)
 	/*  */
 	xTaskHandle HT;
 
+	/* Timer para gerenciamento do tempo*/
+	//xTimer = xTimerCreate("Timer", Main_TIMER_PERIODO, pdFALSE, 0, NULL);
+	
+	
+	
 	/* Tarefa de prioridade 1 (menor) */
 	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 1, &HT);
 	
@@ -117,9 +122,13 @@ int main(void)
 	/* Tarefa de prioridade 2 */
 	xTaskCreate(vTask_2, "Task 2", 1000, NULL, 2, &xTask2Handle);
 	
+	
+	
+	
+	//xTimerStart(xTimer, 0);
+	
 	/* Agendador para iniciar tarefas a serem executadas. */
 	vTaskStartScheduler();
-
 	/*Loop Infinito */
 	for (;; );
 	return 0;
