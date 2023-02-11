@@ -68,31 +68,28 @@
 
 -------------------------------------------------------------------------------------------*/
 
-
 /* Bibliotecas FreeRTOS */
 #include "FreeRTOS.h"
 #include "task.h"
-//#include "timers.h"
 #include "queue.h"
-//#include <conio.h>
+//#include "timers.h"
+
 /* Demo includes. */
 #include "supporting_functions.h"
 
-/* Seis funções de tarefas. */
-void vTaskFunction(void* pvParameters);
+/* Funções de tarefas. */
 void HelloTask(void* pvParameters);
 
-/* String definidas pra cada tarefa */
-const char* pcTextForTask1 = "Tarefa 1: Ar condicionado ligado\r\n";
-const char* pcTextForTask2 = "Tarefa 2: Irrigacao do jardim Ligada\r\n";
-const char* pcTextForTask3 = "Tarefa 3: Portao do pet aberto\r\n";
+/* Tarefa para receptor. */
+void vSenderTask1(void* pvParameters);
+void vSenderTask2(void* pvParameters);
 
-/* Função que converte Ticks para Milisegundos de cada tarefa*/
-//#define vTask_1 pdMS_TO_TICKS(250);
+/* Tarefa para receptor da fila */
+void vReceiverTask(void* pvParameters);
 
-/* Used to hold the handle of Task2. */
-TaskHandle_t xTask2Handle;
-
+/* Declaração das variaveis Handle para conjunto de fila */
+static QueueHandle_t xQueue1 = NULL, xQueue2 = NULL;
+static QueueSetHandle_t xQueueSet = NULL;
 
 
 /*------------------------------------------------------------------------------------------*/
@@ -114,19 +111,23 @@ int main(void)
 
 
 
+	/* Cria duas Queues com um item por cada fila */
+	xQueue1 = xQueueCreate(1, sizeof(char*));
+	xQueue2 = xQueueCreate(1, sizeof(char*));
 
-	/* Task1 */
-	xTaskCreate(vTaskFunction, "Task 1", 1000, (void*)pcTextForTask1, 1, NULL);
+	/* Cria queue com conjunto com numero maximo de manipuladores 2 */
+	xQueueSet = xQueueCreateSet(1 * 2);
 
-	/* Task2 */
-	xTaskCreate(vTaskFunction, "Task 2", 1000, (void*)pcTextForTask2, 2, NULL);
+	/* Adiciona duas queues ao conjunto */
+	xQueueAddToSet(xQueue1, xQueueSet);
+	xQueueAddToSet(xQueue2, xQueueSet);
 
-	/* Task3 */
-	xTaskCreate(vTaskFunction, "Task 3", 1000, (void*)pcTextForTask3, 3, NULL);
+	/* Cria as tarefas enviadas para a fila */
+	xTaskCreate(vSenderTask1, "Tarefa 1: ", 1000, NULL, 1, NULL);
+	xTaskCreate(vSenderTask2, "Tarefa 2: ", 1000, NULL, 1, NULL);
 
-
-
-
+	/* Cria a tarefa de receptor. */
+	xTaskCreate(vReceiverTask, "Receptor: ", 1000, NULL, 2, NULL);
 
 
 
@@ -134,61 +135,93 @@ int main(void)
 
 	/* Agendador para iniciar tarefas a serem executadas. */
 	vTaskStartScheduler();
-	/*Loop Infinito */
+	/* Loop Infinito */
 	for (;; );
 	return 0;
 }
 /*------------------------------------------------------------------------------------------*/
 
-/*Função para mensagem de iniciar */
+
+
+/* Função para mensagem de iniciar */
 void HelloTask(void* pvParameters) {
+	/* Loop infinito */
 	while (1) {
-		printf("Iniciando Sistema de Casa Inteligente...\n");
+		printf("Iniciando Sistema de Casa Inteligente em Tempo Real...\n");
 		vTaskDelay(1000);
 	}
 }
-
-
 /*------------------------------------------------------------------------------------------*/
 
-/*Função para  ... */
-void vTaskFunction(void* pvParameters)
+
+
+/* Função para Queue1 */
+static void vSenderTask1(void* pvParameters)
 {
-	char* pcTaskName;
-	TickType_t xLastWakeTime;
-	const TickType_t xDelay10000ms = pdMS_TO_TICKS(1000UL);
+	const TickType_t xBlockTime = pdMS_TO_TICKS(100);
+	const char* const pcMessage = "Tarefa 1: Iniciada\r\n";
 
-	/* The string to print out is passed in via the parameter.  Cast this to a
-	character pointer. */
-	pcTaskName = (char*)pvParameters;
-
-	/* The xLastWakeTime variable needs to be initialized with the current tick
-	count.  Note that this is the only time we access this variable.  From this
-	point on xLastWakeTime is managed automatically by the vTaskDelayUntil()
-	API function. */
-	xLastWakeTime = xTaskGetTickCount();
-
-	/* As per most tasks, this task is implemented in an infinite loop. */
+	/* Loop infinito */
 	for (;; )
 	{
-		/* Print out the name of this task. */
-		vPrintString(pcTaskName);
+		/* Bloqueia por 100ms. */
+		vTaskDelay(xBlockTime);
 
-		/* We want this task to execute exactly every 250 milliseconds.  As per
-		the vTaskDelay() function, time is measured in ticks, and the
-		pdMS_TO_TICKS() macro is used to convert this to milliseconds.
-		xLastWakeTime is automatically updated within vTaskDelayUntil() so does not
-		have to be updated by this task code. */
-		vTaskDelayUntil(&xLastWakeTime, xDelay10000ms);
+		/* Envie a string desta tarefa para xQueue1. */
+		xQueueSend(xQueue1, &pcMessage, 0);
+	}
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+/* Função para Queue2 */
+static void vSenderTask2(void* pvParameters)
+{
+	const TickType_t xBlockTime = pdMS_TO_TICKS(200);
+	const char* const pcMessage = "Tarefa 2: Iniciada\r\n";
+
+	/* Loop infinito */
+	for (;; )
+	{
+		/* Bloqueia por 200ms. */
+		vTaskDelay(xBlockTime);
+
+		/* Envie a string desta tarefa para xQueue2. */
+		xQueueSend(xQueue2, &pcMessage, 0);
+	}
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+/* Função para receber, verificar e imprimir dados */
+static void vReceiverTask(void* pvParameters)
+{
+	QueueHandle_t xQueueThatContainsData;
+	char* pcReceivedString;
+
+	/* Loop infinito */
+	for (;; )
+	{
+		/* Queue para armazenar os dados recebidos */
+		xQueueThatContainsData = (QueueHandle_t)xQueueSelectFromSet(xQueueSet, portMAX_DELAY);
+
+		/* Retorna os dados quando ao menos uma das filas contenham dados. tempo de bloqueio definido como zero */
+		xQueueReceive(xQueueThatContainsData, &pcReceivedString, 0);
+
+		/* Imprime a string recebida da fila */
+		vPrintString(pcReceivedString);
 	}
 }
 
-
 /*------------------------------------------------------------------------------------------*/
+
+
 
 /*Função para  ... */
 
 
 
 
-/*---------------------
+/*------------------------------------------------------------------------------------------*/
