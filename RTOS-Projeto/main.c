@@ -53,14 +53,16 @@
 	1 tab == 4 spaces!
 */
 
+
+
 /*-------------------------------------------------------------------------------------------
 				Projeto RTOS utilizando FreeRTOS
-	
+
 	-----------------------------------------------------------------------------------
-	|		Tarefas do Sistema         |Prioridade|T.Execução|Deadline|Período|
-	|Tarefa 1: Ligar o ar-condicionado	   |	1     |	    3    |   4    |  24h  |
-	|Tarefa 2: Irrigação do jardim		   |	2     |	    3    |   4    |  12h  |
-	|Tarefa 3: Portão do pet		   |	3     |     5    |   6    |  8h   |
+	|		Tarefas do Sistema			       |Prioridade|T.Execução|Deadline|Período|
+	|Tarefa 1: Ligar o ar-condicionado	       |	1     |	    3    |   4    |  24h  |
+	|Tarefa 2: Irrigação do jardim			   |	2     |	    3    |   4    |  12h  |
+	|Tarefa 3: Portão do pet		           |	3     |     5    |   6    |  8h   |
 	|Tarefa 4: Iluminação da área externa	   |	4     |	    3    |   4    |  24h  |
 	|Tarefa 5: Alimentação do pet automatizada |	5     |	    3    |   4    |  8h   |
 	|Tarefa 6: Checagem de portas e janelas	   |	6     |     5    |   6    |  12h  |
@@ -68,11 +70,13 @@
 
 -------------------------------------------------------------------------------------------*/
 
+
+
 /* Bibliotecas FreeRTOS */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-//#include "timers.h"
+#include "timers.h"
 
 /* Demo includes. */
 #include "supporting_functions.h"
@@ -83,17 +87,19 @@ void HelloTask(void* pvParameters);
 /* Tarefa para receptor. */
 void vSenderTask1(void* pvParameters);
 void vSenderTask2(void* pvParameters);
+void vSenderTask3(void* pvParameters);
+void vSenderTask4(void* pvParameters);
+void vSenderTask5(void* pvParameters);
+void vSenderTask6(void* pvParameters);
 
 /* Tarefa para receptor da fila */
 void vReceiverTask(void* pvParameters);
 
 /* Declaração das variaveis Handle para conjunto de fila */
-static QueueHandle_t xQueue1 = NULL, xQueue2 = NULL;
+static QueueHandle_t xQueue1 = NULL, xQueue2 = NULL, xQueue3 = NULL, xQueue4 = NULL, xQueue5 = NULL, xQueue6 = NULL;
 static QueueSetHandle_t xQueueSet = NULL;
 
-
 /*------------------------------------------------------------------------------------------*/
-
 
 
 /* MAIN */
@@ -101,37 +107,40 @@ int main(void)
 {
 	/* Ponteiro tarefa */
 	xTaskHandle HT;
-
-	/* Timer para gerenciamento do tempo*/
-	//xTimer = xTimerCreate("Timer", Main_TIMER_PERIODO, pdFALSE, 0, NULL);
-
-
 	/* Tarefa de prioridade 7  */
-	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 7, &HT);
-
+	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 8, &HT);
 
 
 	/* Cria duas Queues com um item por cada fila */
 	xQueue1 = xQueueCreate(1, sizeof(char*));
 	xQueue2 = xQueueCreate(1, sizeof(char*));
+	xQueue3 = xQueueCreate(1, sizeof(char*));
+	xQueue4 = xQueueCreate(1, sizeof(char*));
+	xQueue5 = xQueueCreate(1, sizeof(char*));
+	xQueue6 = xQueueCreate(1, sizeof(char*));
 
-	/* Cria queue com conjunto com numero maximo de manipuladores 2 */
-	xQueueSet = xQueueCreateSet(1 * 2);
+	/* Cria queue com conjunto com numero maximo de manipuladores 6 */
+	xQueueSet = xQueueCreateSet(1 * 6);
 
 	/* Adiciona duas queues ao conjunto */
 	xQueueAddToSet(xQueue1, xQueueSet);
 	xQueueAddToSet(xQueue2, xQueueSet);
+	xQueueAddToSet(xQueue3, xQueueSet);
+	xQueueAddToSet(xQueue4, xQueueSet);
+	xQueueAddToSet(xQueue5, xQueueSet);
+	xQueueAddToSet(xQueue6, xQueueSet);
 
 	/* Cria as tarefas enviadas para a fila */
-	xTaskCreate(vSenderTask1, "Tarefa 1: ", 1000, NULL, 1, NULL);
-	xTaskCreate(vSenderTask2, "Tarefa 2: ", 1000, NULL, 1, NULL);
+	xTaskCreate(vSenderTask1, "Tarefa 1: ", 100, NULL, 1, NULL);
+	xTaskCreate(vSenderTask2, "Tarefa 2: ", 100, NULL, 2, NULL);
+	xTaskCreate(vSenderTask3, "Tarefa 3: ", 100, NULL, 3, NULL);
+	xTaskCreate(vSenderTask4, "Tarefa 4: ", 100, NULL, 4, NULL);
+	xTaskCreate(vSenderTask5, "Tarefa 5: ", 100, NULL, 5, NULL);
+	xTaskCreate(vSenderTask6, "Tarefa 6: ", 100, NULL, 6, NULL);
 
 	/* Cria a tarefa de receptor. */
-	xTaskCreate(vReceiverTask, "Receptor: ", 1000, NULL, 2, NULL);
+	xTaskCreate(vReceiverTask, "Receptor: ", 100, NULL, 7, NULL);
 
-
-
-	//xTimerStart(xTimer, 0);
 
 	/* Agendador para iniciar tarefas a serem executadas. */
 	vTaskStartScheduler();
@@ -158,8 +167,8 @@ void HelloTask(void* pvParameters) {
 /* Função para Queue1 */
 static void vSenderTask1(void* pvParameters)
 {
-	const TickType_t xBlockTime = pdMS_TO_TICKS(100);
-	const char* const pcMessage = "Tarefa 1: Iniciada\r\n";
+	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
+	const char* const pcMessage = "Tarefa 1: Ligar Ar condicionado\r\n";
 
 	/* Loop infinito */
 	for (;; )
@@ -178,8 +187,8 @@ static void vSenderTask1(void* pvParameters)
 /* Função para Queue2 */
 static void vSenderTask2(void* pvParameters)
 {
-	const TickType_t xBlockTime = pdMS_TO_TICKS(200);
-	const char* const pcMessage = "Tarefa 2: Iniciada\r\n";
+	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
+	const char* const pcMessage = "Tarefa 2: Ligar Irrigacao do Jardim\r\n";
 
 	/* Loop infinito */
 	for (;; )
@@ -189,6 +198,86 @@ static void vSenderTask2(void* pvParameters)
 
 		/* Envie a string desta tarefa para xQueue2. */
 		xQueueSend(xQueue2, &pcMessage, 0);
+	}
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+/* Função para Queue3 */
+static void vSenderTask3(void* pvParameters)
+{
+	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
+	const char* const pcMessage = "Tarefa 3: Ligar portao pet\r\n";
+
+	/* Loop infinito */
+	for (;; )
+	{
+		/* Bloqueia por 200ms. */
+		vTaskDelay(xBlockTime);
+
+		/* Envie a string desta tarefa para xQueue3. */
+		xQueueSend(xQueue3, &pcMessage, 0);
+	}
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+/* Função para Queue4 */
+static void vSenderTask4(void* pvParameters)
+{
+	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
+	const char* const pcMessage = "Tarefa 4: Ligar Iluminacao da area externa\r\n";
+
+	/* Loop infinito */
+	for (;; )
+	{
+		/* Bloqueia por 200ms. */
+		vTaskDelay(xBlockTime);
+
+		/* Envie a string desta tarefa para xQueue4. */
+		xQueueSend(xQueue4, &pcMessage, 0);
+	}
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+/* Função para Queue5 */
+static void vSenderTask5(void* pvParameters)
+{
+	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
+	const char* const pcMessage = "Tarefa 5: Ligar Alimentacao do Pet\r\n";
+
+	/* Loop infinito */
+	for (;; )
+	{
+		/* Bloqueia por 200ms. */
+		vTaskDelay(xBlockTime);
+
+		/* Envie a string desta tarefa para xQueue5. */
+		xQueueSend(xQueue5, &pcMessage, 0);
+	}
+}
+/*------------------------------------------------------------------------------------------*/
+
+
+
+/* Função para Queue6 */
+static void vSenderTask6(void* pvParameters)
+{
+	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
+	const char* const pcMessage = "Tarefa 6: Ligar Checagem das Portas/Janelas\r\n";
+
+	/* Loop infinito */
+	for (;; )
+	{
+		/* Bloqueia por 200ms. */
+		vTaskDelay(xBlockTime);
+
+		/* Envie a string desta tarefa para xQueue6. */
+		xQueueSend(xQueue6, &pcMessage, 0);
 	}
 }
 /*------------------------------------------------------------------------------------------*/
@@ -217,11 +306,3 @@ static void vReceiverTask(void* pvParameters)
 
 /*------------------------------------------------------------------------------------------*/
 
-
-
-/*Função para  ... */
-
-
-
-
-/*------------------------------------------------------------------------------------------*/
