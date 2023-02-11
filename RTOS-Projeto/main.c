@@ -77,23 +77,21 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
-#include "timers.h"
 
 /* Demo includes. */
 #include "supporting_functions.h"
 
-/* Funções de tarefas. */
+/* Tarefa de imprimir inicialização */
 void HelloTask(void* pvParameters);
 
-/* Tarefa para receptor. */
+/* Tarefas para remetente/receptor da Queue (Fila). */
 void vSenderTask1(void* pvParameters);
 void vSenderTask2(void* pvParameters);
 void vSenderTask3(void* pvParameters);
 void vSenderTask4(void* pvParameters);
 void vSenderTask5(void* pvParameters);
 void vSenderTask6(void* pvParameters);
-
-/* Tarefa para receptor da fila */
+/* Receptor */
 void vReceiverTask(void* pvParameters);
 
 /* Declaração das variaveis Handle para conjunto de fila */
@@ -112,7 +110,7 @@ int main(void)
 	xTaskCreate(HelloTask, "HelloTask", 1000, NULL, 8, &HT);
 
 
-	/* Cria duas Queues com um item por cada fila */
+	/* Cria 6 Queues com um item por cada fila */
 	xQueue1 = xQueueCreate(1, sizeof(char*));
 	xQueue2 = xQueueCreate(1, sizeof(char*));
 	xQueue3 = xQueueCreate(1, sizeof(char*));
@@ -123,7 +121,7 @@ int main(void)
 	/* Cria queue com conjunto com numero maximo de manipuladores 6 */
 	xQueueSet = xQueueCreateSet(1 * 6);
 
-	/* Adiciona duas queues ao conjunto */
+	/* Adiciona 6 queues ao conjunto */
 	xQueueAddToSet(xQueue1, xQueueSet);
 	xQueueAddToSet(xQueue2, xQueueSet);
 	xQueueAddToSet(xQueue3, xQueueSet);
@@ -306,6 +304,5 @@ static void vReceiverTask(void* pvParameters)
 }
 
 /*------------------------------------------------------------------------------------------*/
-
 
 
