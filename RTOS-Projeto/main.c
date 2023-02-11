@@ -60,12 +60,12 @@
 				Projeto RTOS utilizando FreeRTOS
 
 	-----------------------------------------------------------------------------------
-	|		Tarefas do Sistema			       |Prioridade|T.Execução|Deadline|Período|
-	|Tarefa 1: Ligar o ar-condicionado	       |	1     |	    3    |   4    |  24h  |
-	|Tarefa 2: Irrigação do jardim			   |	2     |	    3    |   4    |  12h  |
-	|Tarefa 3: Portão do pet		           |	3     |     5    |   6    |  8h   |
-	|Tarefa 4: Iluminação da área externa	   |	4     |	    3    |   4    |  24h  |
-	|Tarefa 5: Alimentação do pet automatizada |	5     |	    3    |   4    |  8h   |
+	|		Tarefas do Sistema	   |Prioridade|T.ExecuÃ§Ã£o|Deadline|PerÃ­odo|
+	|Tarefa 1: Ligar o ar-condicionado	   |	1     |	    3    |   4    |  24h  |
+	|Tarefa 2: IrrigaÃ§Ã£o do jardim   	   |	2     |	    3    |   4    |  12h  |
+	|Tarefa 3: PortÃ£o do pet	           |	3     |     5    |   6    |  8h   |
+	|Tarefa 4: IluminaÃ§Ã£o da Ã¡rea externa	   |	4     |	    3    |   4    |  24h  |
+	|Tarefa 5: AlimentaÃ§Ã£o do pet automatizada |	5     |	    3    |   4    |  8h   |
 	|Tarefa 6: Checagem de portas e janelas	   |	6     |     5    |   6    |  12h  |
 	-----------------------------------------------------------------------------------
 
@@ -82,7 +82,7 @@
 /* Demo includes. */
 #include "supporting_functions.h"
 
-/* Funções de tarefas. */
+/* FunÃ§Ãµes de tarefas. */
 void HelloTask(void* pvParameters);
 
 /* Tarefa para receptor. */
@@ -96,7 +96,7 @@ void vSenderTask6(void* pvParameters);
 /* Tarefa para receptor da fila */
 void vReceiverTask(void* pvParameters);
 
-/* Declaração das variaveis Handle para conjunto de fila */
+/* DeclaraÃ§Ã£o das variaveis Handle para conjunto de fila */
 static QueueHandle_t xQueue1 = NULL, xQueue2 = NULL, xQueue3 = NULL, xQueue4 = NULL, xQueue5 = NULL, xQueue6 = NULL;
 static QueueSetHandle_t xQueueSet = NULL;
 
@@ -153,7 +153,7 @@ int main(void)
 
 
 
-/* Função para mensagem de iniciar */
+/* FunÃ§Ã£o para mensagem de iniciar */
 void HelloTask(void* pvParameters) {
 	/* Loop infinito */
 	while (1) {
@@ -165,7 +165,7 @@ void HelloTask(void* pvParameters) {
 
 
 
-/* Função para Queue1 */
+/* FunÃ§Ã£o para Queue1 */
 static void vSenderTask1(void* pvParameters)
 {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
@@ -185,7 +185,7 @@ static void vSenderTask1(void* pvParameters)
 
 
 
-/* Função para Queue2 */
+/* FunÃ§Ã£o para Queue2 */
 static void vSenderTask2(void* pvParameters)
 {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
@@ -205,7 +205,7 @@ static void vSenderTask2(void* pvParameters)
 
 
 
-/* Função para Queue3 */
+/* FunÃ§Ã£o para Queue3 */
 static void vSenderTask3(void* pvParameters)
 {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
@@ -225,7 +225,7 @@ static void vSenderTask3(void* pvParameters)
 
 
 
-/* Função para Queue4 */
+/* FunÃ§Ã£o para Queue4 */
 static void vSenderTask4(void* pvParameters)
 {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
@@ -245,7 +245,7 @@ static void vSenderTask4(void* pvParameters)
 
 
 
-/* Função para Queue5 */
+/* FunÃ§Ã£o para Queue5 */
 static void vSenderTask5(void* pvParameters)
 {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(300);
@@ -265,7 +265,7 @@ static void vSenderTask5(void* pvParameters)
 
 
 
-/* Função para Queue6 */
+/* FunÃ§Ã£o para Queue6 */
 static void vSenderTask6(void* pvParameters)
 {
 	const TickType_t xBlockTime = pdMS_TO_TICKS(500);
@@ -285,7 +285,7 @@ static void vSenderTask6(void* pvParameters)
 
 
 
-/* Função para receber, verificar e imprimir dados */
+/* FunÃ§Ã£o para receber, verificar e imprimir dados */
 static void vReceiverTask(void* pvParameters)
 {
 	QueueHandle_t xQueueThatContainsData;
