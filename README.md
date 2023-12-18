@@ -25,7 +25,7 @@ Modelo de Escalonamento utilizado:
 ### Recursos:
 
 ```
-[FreeRTOS](https://www.freertos.org/index.html)
+FreeRTOS
 
 Visual Studio 2022
 
